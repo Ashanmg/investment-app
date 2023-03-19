@@ -10,7 +10,7 @@ namespace InvestmentAppProd.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class InvestmentController : Controller
+    public class InvestmentController : ControllerBase
     {
         private readonly InvestmentDBContext _context;
 

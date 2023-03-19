@@ -22,12 +22,12 @@ namespace InvestmentAppProd
         public void ConfigureServices(IServiceCollection services)
         {
             //Using InMemoryDatabase, Database name set as "Investments".
-            services.AddDbContext<InvestmentDBContext>(options => options.UseInMemoryDatabase("Investments"));
+            services.AddDbContext<InvestmentDBContext>(options => options.UseSqlite(Configuration["ConnectionConfig:ApplicationConnection"]));
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "InvestmentAppProd", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "InvestmentApp", Version = "v1" });
             });
         }
 
@@ -39,6 +39,14 @@ namespace InvestmentAppProd
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "InvestmentAppProd v1"));
+
+                using (var scope = app.ApplicationServices.CreateScope())
+                {
+                    var services = scope.ServiceProvider;
+                    var context = services.GetRequiredService<InvestmentDBContext>();
+
+                    InvestmentDBSeed.Initialize(context);
+                }
             }
 
             app.UseHttpsRedirection();

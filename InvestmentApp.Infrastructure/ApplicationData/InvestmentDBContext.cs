@@ -10,6 +10,5 @@ namespace InvestmentApp.Infrastructure.ApplicationData
         public InvestmentDBContext(DbContextOptions<InvestmentDBContext> options) : base(options)
         {
         }
-
     }
 }
