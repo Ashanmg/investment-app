@@ -1,4 +1,4 @@
-﻿namespace InvestmentApp.API
+﻿namespace InvestmentApp.Core.Enums
 {
     public enum InterestType
     {

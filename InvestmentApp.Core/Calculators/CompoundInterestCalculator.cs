@@ -1,7 +1,7 @@
-﻿using InvestmentAppProd.Models;
+﻿using InvestmentApp.Core.Entities;
 using System;
 
-namespace InvestmentApp.API
+namespace InvestmentApp.Core.Calculators
 {
     public class CompoundInterestCalculator : InterestCalculator
     {

@@ -1,6 +1,6 @@
-﻿using InvestmentAppProd.Models;
+﻿using InvestmentApp.Core.Entities;
 
-namespace InvestmentApp.API
+namespace InvestmentApp.Core.Calculators
 {
     public abstract class InterestCalculator
     {

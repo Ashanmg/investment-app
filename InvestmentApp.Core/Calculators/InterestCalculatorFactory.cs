@@ -1,6 +1,7 @@
-﻿using InvestmentAppProd.Models;
+﻿using InvestmentApp.Core.Entities;
+using InvestmentApp.Core.Enums;
 
-namespace InvestmentApp.API
+namespace InvestmentApp.Core.Calculators
 {
     public class InterestCalculatorFactory
     {

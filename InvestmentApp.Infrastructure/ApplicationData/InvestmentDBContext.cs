@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using InvestmentApp.Core.Entities;
 using Microsoft.EntityFrameworkCore;
-using InvestmentAppProd.Models;
 
-namespace InvestmentAppProd.Data
+namespace InvestmentApp.Infrastructure.ApplicationData
 {
     public class InvestmentDBContext : DbContext
     {

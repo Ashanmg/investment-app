@@ -1,7 +1,7 @@
-﻿using InvestmentApp.API;
+﻿using InvestmentApp.Core.Entities;
+using InvestmentApp.Core.Enums;
+using InvestmentApp.Infrastructure.ApplicationData;
 using InvestmentAppProd.Controllers;
-using InvestmentAppProd.Data;
-using InvestmentAppProd.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
