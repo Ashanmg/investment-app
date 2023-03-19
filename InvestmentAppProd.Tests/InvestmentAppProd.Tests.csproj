@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\InvestmentAppProd\InvestmentAppProd.csproj" />
+    <ProjectReference Include="..\InvestmentApp.API\InvestmentApp.API.csproj" />
   </ItemGroup>
 
 </Project>
