@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace InvestmentAppProd
 {
@@ -21,8 +23,16 @@ namespace InvestmentAppProd
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //Using InMemoryDatabase, Database name set as "Investments".
+            //Using SqliteDatabase, Database.
             services.AddDbContext<InvestmentDBContext>(options => options.UseSqlite(Configuration["ConnectionConfig:ApplicationConnection"]));
+
+            //convert Enums to Strings (instead of Integer) globally
+            JsonConvert.DefaultSettings = (() =>
+            {
+                var settings = new JsonSerializerSettings();
+                settings.Converters.Add(new StringEnumConverter());
+                return settings;
+            });
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

@@ -1,4 +1,5 @@
-﻿using InvestmentApp.Core.Entities;
+﻿using InvestmentApp.API.Models;
+using InvestmentApp.Core.Entities;
 using InvestmentApp.Core.Enums;
 using InvestmentApp.Infrastructure.ApplicationData;
 using InvestmentAppProd.Controllers;
@@ -66,6 +67,12 @@ namespace InvestmentAppProd.Tests
                     PrincipalAmount = 20000
                 });
 
+            // calculate the investment value
+            foreach (var investment in newInvestments)
+            {
+                investment.CalculateValue();
+            }
+
             context.Investments.AddRange(newInvestments);
             context.SaveChanges();
         }
@@ -85,13 +92,12 @@ namespace InvestmentAppProd.Tests
             // ACT
             var result = controller.FetchInvestment();
             var obj = result.Result as ObjectResult;
-            var objListResult = (List<Investment>)obj.Value;
-            //var objCountResult = ((List<Investment>)obj.Value).Count();
+            var objListResult = (List<InvestmentResponse>)obj.Value;
 
             // ASSERT   : Status code 200 ("Ok") + Count of objects returned is correct + Object returned (first) is of Type Investment.
             Assert.AreEqual(200, (obj.StatusCode));
             Assert.AreEqual(context.Investments.Count(), objListResult.Count());
-            Assert.IsInstanceOf<Investment>(objListResult.First());
+            Assert.IsInstanceOf<InvestmentResponse>(objListResult.First());
         }
 
         [Test]
@@ -104,11 +110,11 @@ namespace InvestmentAppProd.Tests
             // Act
             var result = controller.FetchInvestment(name);
             var obj = result.Result as ObjectResult;
-            var objInvResult = obj.Value as Investment;
+            var objInvResult = obj.Value as InvestmentResponse;
 
             // Assert   : Status code 200 ("Ok") + Object returned is of Type Investment + Object name is same.
             Assert.AreEqual(200, (obj.StatusCode));
-            Assert.IsInstanceOf<Investment>(objInvResult);
+            Assert.IsInstanceOf<InvestmentResponse>(objInvResult);
             Assert.AreEqual(name, objInvResult.Name);
         }
 
@@ -117,11 +123,11 @@ namespace InvestmentAppProd.Tests
         {
             // Arrange
             var controller = new InvestmentController(context);
-            var newInvestnment = new Investment
+            var newInvestnment = new InvestmentRequest
             {
                 Name = "Investment 4",
                 StartDate = DateTime.Parse("2022-05-01"),
-                InterestType = InterestType.Simple,
+                InterestType = "Simple",
                 InterestRate = 7.7,
                 PrincipalAmount = 25000
             };
@@ -143,11 +149,11 @@ namespace InvestmentAppProd.Tests
             Setup();
             var controller = new InvestmentController(context);
             var updateInvestment = "Investment 2";
-            var newInvestment = new Investment
+            var newInvestment = new InvestmentRequest
             {
                 Name = "Investment 2",
                 StartDate = DateTime.Parse("2022-06-01"),
-                InterestType = InterestType.Compound,
+                InterestType = "Compound",
                 InterestRate = 8,
                 PrincipalAmount = 30000
             };

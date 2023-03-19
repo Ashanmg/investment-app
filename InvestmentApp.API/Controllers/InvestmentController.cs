@@ -1,10 +1,14 @@
-﻿using InvestmentApp.Core.Entities;
+﻿using InvestmentApp.API.Models;
+using InvestmentApp.Core.Entities;
+using InvestmentApp.Core.Enums;
 using InvestmentApp.Infrastructure.ApplicationData;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace InvestmentAppProd.Controllers
 {
@@ -20,11 +24,13 @@ namespace InvestmentAppProd.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Investment>> FetchInvestment()
+        public ActionResult<List<InvestmentResponse>> FetchInvestment()
         {
             try
             {
-                return Ok(_context.Investments.ToList());
+                var investmentList = _context.Investments.ToList();
+                var investmentResponseList = JsonConvert.DeserializeObject<List<InvestmentResponse>>(JsonConvert.SerializeObject(investmentList));
+                return Ok(investmentResponseList);
             }
             catch (Exception e)
             {
@@ -33,7 +39,7 @@ namespace InvestmentAppProd.Controllers
         }
 
         [HttpGet("name")]
-        public ActionResult<Investment> FetchInvestment([FromQuery] string name)
+        public ActionResult<InvestmentResponse> FetchInvestment([FromQuery] string name)
         {
             try
             {
@@ -41,7 +47,8 @@ namespace InvestmentAppProd.Controllers
                 if (investment == null)
                     return NotFound();
 
-                return Ok(investment);
+                var investmentResponse = JsonConvert.DeserializeObject<InvestmentResponse>(JsonConvert.SerializeObject(investment));
+                return Ok(investmentResponse);
             }
             catch (Exception e)
             {
@@ -51,19 +58,37 @@ namespace InvestmentAppProd.Controllers
 
 
         [HttpPost]
-        public ActionResult<Investment> AddInvestment([FromBody] Investment investment)
+        public ActionResult<Investment> AddInvestment([FromBody] InvestmentRequest investmentRequest)
         {
             try
             {
-                if (investment.StartDate > DateTime.Now)
+                if (investmentRequest.StartDate > DateTime.Now)
+                {
                     return BadRequest("Investment Start Date cannot be in the future.");
+                }
+
+                // covert the investment type string to enum.
+                if (!Enum.TryParse<InterestType>(investmentRequest.InterestType, out var InterestType))
+                {
+                    return BadRequest($"Invalid value for interest type. Valid values are: {string.Join(", ", Enum.GetNames(typeof(InterestType)))}.");
+                }
+
+                // validate the investment exists in the db
+                var isExisted = _context.Investments.Any(i => i.Name == investmentRequest.Name);
+                if (isExisted)
+                {
+                    return BadRequest("Investment already exists.");
+                }
+
+                var investment = JsonConvert.DeserializeObject<Investment>(JsonConvert.SerializeObject(investmentRequest));
 
                 investment.CalculateValue();
                 _context.ChangeTracker.Clear();
                 _context.Investments.Add(investment);
                 _context.SaveChanges();
 
-                return CreatedAtAction("AddInvestment", investment.Name, investment);
+                var investmentResponse = JsonConvert.DeserializeObject<InvestmentResponse>(JsonConvert.SerializeObject(investment));
+                return CreatedAtAction("AddInvestment", investment.Name, investmentResponse);
             }
             catch (DbUpdateException dbE)
             {
@@ -71,20 +96,35 @@ namespace InvestmentAppProd.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(e.ToString());
+                return StatusCode(500, e.ToString());
             }
         }
 
         [HttpPut("name")]
-        public ActionResult UpdateInvestment([FromQuery] string name, [FromBody] Investment investment)
+        public ActionResult UpdateInvestment([FromQuery] string name, [FromBody] InvestmentRequest investmentRequest)
         {
             try
             {
-                if (name != investment.Name)
+                if (name != investmentRequest.Name)
                     return BadRequest("Name does not match the Investment you are trying to update.");
 
-                if (investment.StartDate > DateTime.Now)
+                if (investmentRequest.StartDate > DateTime.Now)
                     return BadRequest("Investment Start Date cannot be in the future.");
+
+                // covert the investment type string to enum.
+                if (!Enum.TryParse<InterestType>(investmentRequest.InterestType, out var InterestType))
+                {
+                    return BadRequest($"Invalid value for interest type. Valid values are: {string.Join(", ", Enum.GetNames(typeof(InterestType)))}.");
+                }
+
+                // validate the investment exists in the db
+                var isExisted = _context.Investments.Any(i => i.Name == name);
+                if (!isExisted)
+                {
+                    return NotFound();
+                }
+
+                var investment = JsonConvert.DeserializeObject<Investment>(JsonConvert.SerializeObject(investmentRequest));
 
                 investment.CalculateValue();
                 _context.ChangeTracker.Clear();
@@ -95,7 +135,7 @@ namespace InvestmentAppProd.Controllers
             }
             catch (Exception e)
             {
-                return NotFound(e.ToString());
+                return StatusCode(500, e.ToString());
             }
         }
 

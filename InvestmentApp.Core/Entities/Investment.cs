@@ -1,7 +1,9 @@
 ﻿using InvestmentApp.Core.Calculators;
 using InvestmentApp.Core.Enums;
+using Newtonsoft.Json.Converters;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace InvestmentApp.Core.Entities
 {
