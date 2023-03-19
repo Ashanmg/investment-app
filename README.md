@@ -1,8 +1,6 @@
-# MYP Senior Engineer Test
+# Create Investment Application
 
-Build an investment app API. 
-
-It should allow you to:
+This application providr you to
 * Add an investment
     
     * An investment should include:
@@ -54,22 +52,27 @@ It should allow you to:
     t = time in decimal years; e.g., 6 months is calculated as 0.5 years. 
     See https://www.calculatorsoup.com/calculators/financial/compound-interest-calculator.php
     ```
-* Authentication is not needed
-* In memory DB is acceptable
-* It should be extensible
-* Quality should be high
 
+* In memory DB is used to the unit testing while API is used SQLite as the database option.
+* Code is extensible for new Interest Type without modifying the existing types.
 
+## Instructions Run the application
 
-Instructions:
-* Push your solution to your github repo
-* Please use your commits to tell a story (i.e. not one big commit) 
-* Be ready to answer questions about your choices
-* Send an email with:
-    * A link to your repo
-    * Instructions on how to use the API to add, delete, update and fetch an investment
-    * Any pieces of functionality you decided not to complete with reasons behind the decision
+* Clone the code and setup InvestmentApp.API as startup project.
+* resolve the nuget packages by clean and rebuild the solutions.
+* Note: this application is running in donet 5. So make sure to install the DotNet 5 SDK before you run.
+* I have used SQLite as the Database option so if you are happy to go with, you need SQLite in the machine and need write access to IISUSER to create database in the given folder path.
+* If you are like to go with SQLServer then you need to do relevant configuration to the code and create Migrations before you update the Database.
+* Now you can run the application.
 
+## Not Covered
+
+* Message verifications are not covered in the unit testing.
+* Relevent logs are not created in the current application.
+
+## Assumptions
+
+* Assume Interest types are case sencitive.
 
 
 
