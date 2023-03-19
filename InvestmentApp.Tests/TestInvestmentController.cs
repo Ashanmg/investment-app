@@ -101,7 +101,7 @@ namespace InvestmentAppProd.Tests
         }
 
         [Test]
-        public void GetInvestment_WithSingleItem_ShouldReturnSingleInvestment()
+        public void GetInvestment_WithSingleItem_ShouldReturnSingleSimpleInvestment()
         {
             // Arrange
             var controller = new InvestmentController(context);
@@ -112,10 +112,30 @@ namespace InvestmentAppProd.Tests
             var obj = result.Result as ObjectResult;
             var objInvResult = obj.Value as InvestmentResponse;
 
-            // Assert   : Status code 200 ("Ok") + Object returned is of Type Investment + Object name is same.
+            // Assert   : Status code 200 ("Ok") + Object returned is of Simple Type Investment + Object name is same.
             Assert.AreEqual(200, (obj.StatusCode));
             Assert.IsInstanceOf<InvestmentResponse>(objInvResult);
             Assert.AreEqual(name, objInvResult.Name);
+            Assert.AreEqual(10387.5, objInvResult.CurrentValue); // validate the simple interest rate calculator is correct.
+        }
+
+        [Test]
+        public void GetInvestment_WithSingleItem_ShouldReturnSingleCompoundInvestment()
+        {
+            // Arrange
+            var controller = new InvestmentController(context);
+            var name = "Investment 3";
+
+            // Act
+            var result = controller.FetchInvestment(name);
+            var obj = result.Result as ObjectResult;
+            var objInvResult = obj.Value as InvestmentResponse;
+
+            // Assert   : Status code 200 ("Ok") + Object returned is of Simple Type Investment + Object name is same.
+            Assert.AreEqual(200, (obj.StatusCode));
+            Assert.IsInstanceOf<InvestmentResponse>(objInvResult);
+            Assert.AreEqual(name, objInvResult.Name);
+            Assert.AreEqual(20849.13, objInvResult.CurrentValue); // validate the compound interest rate calculator is correct.
         }
 
         [Test]
