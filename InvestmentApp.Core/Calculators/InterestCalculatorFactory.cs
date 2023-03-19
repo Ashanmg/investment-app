@@ -1,5 +1,6 @@
 ﻿using InvestmentApp.Core.Entities;
 using InvestmentApp.Core.Enums;
+using System;
 
 namespace InvestmentApp.Core.Calculators
 {
@@ -7,16 +8,14 @@ namespace InvestmentApp.Core.Calculators
     {
         public InterestCalculator Create(Investment investment)
         {
-            switch (investment.InterestType)
+            try
             {
-                case InterestType.Simple:
-                    return new SimpleInterestCalculator();
-
-                case InterestType.Compound:
-                    return new CompoundInterestCalculator();
-
-                default:
-                    return new UnknownInterestCalculator();
+                return (InterestCalculator)Activator.CreateInstance(
+                    Type.GetType($"InvestmentApp.Core.Calculators.{Enum.GetName(typeof(InterestType), investment.InterestType)}InterestCalculator"));
+            }
+            catch (Exception ex)
+            {
+                return new UnknownInterestCalculator();
             }
         }
     }
