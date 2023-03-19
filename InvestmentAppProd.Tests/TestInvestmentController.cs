@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestPlatform;
-using NUnit.Framework;
-using InvestmentAppProd.Models;
+﻿using InvestmentApp.API;
 using InvestmentAppProd.Controllers;
 using InvestmentAppProd.Data;
-using Microsoft.EntityFrameworkCore;
+using InvestmentAppProd.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using System.Threading;
+using Microsoft.EntityFrameworkCore;
+using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace InvestmentAppProd.Tests
 {
@@ -47,7 +43,7 @@ namespace InvestmentAppProd.Tests
                 {
                     Name = "Investment 1",
                     StartDate = DateTime.Parse("2022-03-01"),
-                    InterestType = "Simple",
+                    InterestType = InterestType.Simple,
                     InterestRate = 3.875,
                     PrincipalAmount = 10000
                 });
@@ -56,7 +52,7 @@ namespace InvestmentAppProd.Tests
                 {
                     Name = "Investment 2",
                     StartDate = DateTime.Parse("2022-04-01"),
-                    InterestType = "Simple",
+                    InterestType = InterestType.Simple,
                     InterestRate = 4,
                     PrincipalAmount = 15000
                 });
@@ -65,7 +61,7 @@ namespace InvestmentAppProd.Tests
                 {
                     Name = "Investment 3",
                     StartDate = DateTime.Parse("2022-05-01"),
-                    InterestType = "Compound",
+                    InterestType = InterestType.Compound,
                     InterestRate = 5,
                     PrincipalAmount = 20000
                 });
@@ -125,7 +121,7 @@ namespace InvestmentAppProd.Tests
             {
                 Name = "Investment 4",
                 StartDate = DateTime.Parse("2022-05-01"),
-                InterestType = "Simple",
+                InterestType = InterestType.Simple,
                 InterestRate = 7.7,
                 PrincipalAmount = 25000
             };
@@ -151,7 +147,7 @@ namespace InvestmentAppProd.Tests
             {
                 Name = "Investment 2",
                 StartDate = DateTime.Parse("2022-06-01"),
-                InterestType = "Compound",
+                InterestType = InterestType.Compound,
                 InterestRate = 8,
                 PrincipalAmount = 30000
             };

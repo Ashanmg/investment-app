@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using InvestmentApp.API;
 
 namespace InvestmentAppProd.Models
 {
@@ -15,7 +16,7 @@ namespace InvestmentAppProd.Models
 
 		public DateTime StartDate { get; set; }
 
-		public string InterestType { get; set; }
+		public InterestType InterestType { get; set; }
 
 		public double InterestRate { get; set; }
 
@@ -31,40 +32,18 @@ namespace InvestmentAppProd.Models
 		{
 			Name = name;
 			StartDate = startDate;
-			InterestType = interestType;
+			InterestType = Enum.Parse<InterestType>(interestType);
 			InterestRate = rate;
 			PrincipalAmount = principal;
 		}
 
 		public void CalculateValue()
 		{
-			double r;
-			double t;
-			double n;
-			double simpleInterestFinalAmount;
-			double compoundInterestFinalAmount;
-			double monthsDiff;
+			var factory = new InterestCalculatorFactory();
 
-			// Interest rate is divided by 100.
-			r = this.InterestRate / 100;
+			var calculator = factory.Create(this);
+			this.CurrentValue = calculator.CalculateInterestValue(this);
 
-			// Time t is calculated to the nearest month.
-			monthsDiff = 12 * (this.StartDate.Year - DateTime.Now.Year) + this.StartDate.Month - DateTime.Now.Month;
-			monthsDiff = Math.Abs(monthsDiff);
-			t = monthsDiff / 12;
-
-			// SIMPLE INTEREST.
-			simpleInterestFinalAmount = this.PrincipalAmount * (1 + (r * t));
-
-			// COMPOUND INTEREST.
-			// Compounding period is set to monthly (i.e. n = 12).
-			n = 12;
-			compoundInterestFinalAmount = this.PrincipalAmount * Math.Pow((1 + (r / n)), (n * t));
-
-			if (this.InterestType == "Simple")
-				this.CurrentValue = Math.Round(simpleInterestFinalAmount, 2);
-			else
-				this.CurrentValue = Math.Round(compoundInterestFinalAmount, 2);
-		}
+        }
 	}
 }
